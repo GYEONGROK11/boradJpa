@@ -1,9 +1,16 @@
 package com.green.boardjpa.entity;
 
 import com.green.boardjpa.entity.model.BoardCommentInsDto;
+import com.green.boardjpa.entity.model.BoardSelVo;
+import com.green.boardjpa.entity.model.BoardUpdDto;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 //클라이언트 사이드 렌더링 : 서버에서 데이터(json)만 전달하고 클라이언트에서 렌더링 //리액트 사용할때
@@ -23,6 +30,16 @@ public class BoardController {
     public Long deleteBoard(@RequestParam Long iboard){
         service.deleteBoard(iboard);
         return 1L;
+    }
+
+    @PutMapping
+    public Long putBoard(@RequestBody BoardUpdDto dto){
+        return service.putBoard(dto);
+    }
+
+    @GetMapping
+    public List<BoardSelVo> getBoardList(@PageableDefault(size = 4,sort = "iboard",direction = Sort.Direction.DESC) Pageable pageable){
+        return service.getBoardList(pageable);
     }
 
     @PostMapping("/cmt")
