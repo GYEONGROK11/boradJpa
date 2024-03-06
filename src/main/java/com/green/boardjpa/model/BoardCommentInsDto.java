@@ -1,4 +1,4 @@
-package com.green.boardjpa.entity.model;
+package com.green.boardjpa.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.green.boardjpa.entity.Board;

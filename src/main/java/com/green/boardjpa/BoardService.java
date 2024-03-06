@@ -1,23 +1,20 @@
-package com.green.boardjpa.entity;
+package com.green.boardjpa;
 
-import com.green.boardjpa.entity.model.BoardCommentInsDto;
-import com.green.boardjpa.entity.model.BoardSelVo;
-import com.green.boardjpa.entity.model.BoardUpdDto;
+import com.green.boardjpa.entity.Board;
+import com.green.boardjpa.entity.BoardComment;
+import com.green.boardjpa.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-
 
 
 @Service
@@ -27,7 +24,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardCommentRepository boardCommentRepository;
 
-    public Long postBoard(Board board){
+    public Long postBoard(Board board) {
         //save메소드는 insert와 update를 모두 처리
         String hashedPw = BCrypt.hashpw(board.getPw(), BCrypt.gensalt());
         board.setPw(hashedPw);
@@ -36,7 +33,7 @@ public class BoardService {
         return board.getIboard();
     }
 
-    public Long postBoardComment(BoardCommentInsDto dto){
+    public Long postBoardComment(BoardCommentInsDto dto) {
         //Board board = new Board();
         //board.setIboard(dto.getIboard());
         Board board2 = boardRepository.getReferenceById((dto.getIboard()));
@@ -56,7 +53,7 @@ public class BoardService {
         return boardComment.getIboardComment();
     }
 
-    public void deleteBoard(Long iboard){
+    public void deleteBoard(Long iboard) {
         Board board = boardRepository.getReferenceById(iboard);
         boardCommentRepository.deleteByBoard(iboard);
 
@@ -65,9 +62,9 @@ public class BoardService {
     }
 
     @Transactional
-    public Long putBoard(BoardUpdDto dto){
+    public Long putBoard(BoardUpdDto dto) {
         Board board = boardRepository.getReferenceById(dto.getIboard());
-        if(!BCrypt.checkpw(dto.getPw(),board.getPw())){
+        if (!BCrypt.checkpw(dto.getPw(), board.getPw())) {
             return -1L;
         }
         board.setTitle(dto.getTitle()); //영속성으로인해 자동 업데이트
@@ -77,11 +74,16 @@ public class BoardService {
 
     }
 
+    public int getTotalPage(Pageable pageable) {
+        int result = (int) Math.ceil((double) boardRepository.count() / pageable.getPageSize());
 
-    public List<BoardSelVo> getBoardList(Pageable pageable){
+        return result;
+    }
+
+    public List<BoardSelVo> getBoardList(Pageable pageable) {
 
         //1 Default 쿼리 메소드
-        /* Page<Board> list1 = boardRepository.findAll(pageable);
+        /*Page<Board> list1 = boardRepository.findAll(pageable);
 
         List<BoardSelVo> result = new ArrayList<>();
 
@@ -142,7 +144,32 @@ public class BoardService {
 
         //4 QueryDSL
 
-        return  boardRepository.selBoardListQdsl(pageable);
+        return boardRepository.selBoardListQdsl(pageable);
 
+    }
+
+    @Transactional
+    public BoardDetailVo getBoard(Long iboard) {
+        /*Optional<Board> vo = boardRepository.findById(iboard);
+        List<BoardComment> cmtList = boardCommentRepository.searchAllByBoard(iboard);
+
+        BoardDetailVo result = new BoardDetailVo();
+        result.setIboard(vo.get().getIboard());
+        result.setTitle(vo.get().getTitle());
+        result.setContents(vo.get().getContents());
+        result.setWriter(vo.get().getWriter());
+        result.setCreatedAt(vo.get().getCreatedAt());
+        result.setCmtList(cmtList.stream().map(item -> {
+            BoardCmtVo vo2 = new BoardCmtVo();
+            vo2.setIboardComment(item.getIboardComment());
+            vo2.setComment(item.getComment());
+            vo2.setWriter(item.getWriter());
+            vo2.setCreatedAt(item.getCreatedAt());
+            return vo2;
+        }).collect(Collectors.toList()));
+
+        return result;*/
+
+        return boardRepository.selBoardQdsl(iboard);
     }
 }

@@ -1,4 +1,4 @@
-package com.green.boardjpa.entity.model;
+package com.green.boardjpa.model;
 
 import com.green.boardjpa.entity.BoardComment;
 import lombok.AllArgsConstructor;
@@ -11,9 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
-@RequiredArgsConstructor
+
 public class BoardSelVo {
     private Long iboard;
     private String title;

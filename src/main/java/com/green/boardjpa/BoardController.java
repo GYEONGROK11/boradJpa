@@ -1,8 +1,10 @@
-package com.green.boardjpa.entity;
+package com.green.boardjpa;
 
-import com.green.boardjpa.entity.model.BoardCommentInsDto;
-import com.green.boardjpa.entity.model.BoardSelVo;
-import com.green.boardjpa.entity.model.BoardUpdDto;
+import com.green.boardjpa.entity.Board;
+import com.green.boardjpa.model.BoardCommentInsDto;
+import com.green.boardjpa.model.BoardDetailVo;
+import com.green.boardjpa.model.BoardSelVo;
+import com.green.boardjpa.model.BoardUpdDto;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -35,6 +37,16 @@ public class BoardController {
     @PutMapping
     public Long putBoard(@RequestBody BoardUpdDto dto){
         return service.putBoard(dto);
+    }
+
+    @GetMapping("/page")
+    public int getTotalPage(Pageable pageable){
+        return service.getTotalPage(pageable);
+    }
+
+    @GetMapping("/{iboard}")
+    public BoardDetailVo getBoard(@PathVariable Long iboard){
+        return service.getBoard(iboard);
     }
 
     @GetMapping

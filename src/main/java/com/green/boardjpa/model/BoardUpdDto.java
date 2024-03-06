@@ -1,4 +1,4 @@
-package com.green.boardjpa.entity.model;
+package com.green.boardjpa.model;
 
 import lombok.Data;
 

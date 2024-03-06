@@ -1,5 +1,6 @@
 package com.green.boardjpa.common.config;
 
+import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,6 +15,6 @@ public class QdslConfiguration {
 
     @Bean
     public JPAQueryFactory createJPAQueryFactory() {
-        return new JPAQueryFactory(em);
+        return new JPAQueryFactory(JPQLTemplates.DEFAULT,em);
     }
 }
